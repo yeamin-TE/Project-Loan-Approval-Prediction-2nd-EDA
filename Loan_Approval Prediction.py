@@ -85,4 +85,34 @@ categorcal_cols = ['Gender', 'Married', 'Dependents', 'Education', 'Self_Employe
 for col in categorcal_cols:
     df[col] = le.fit_transform(df[col])
 
-print(df.info())
+#print(df.info())
+
+X = df.drop(['Loan_Status', 'Loan_ID'], axis=1)
+y = df['Loan_Status']
+from sklearn.preprocessing import StandardScaler
+numerical_features = ['ApplicantIncome', 'CoapplicantIncome', 'LoanAmount', 'Loan_Amount_Term']
+scaler = StandardScaler()
+X[numerical_features] = scaler.fit_transform(X[numerical_features])
+
+from sklearn.model_selection import train_test_split
+x_train , x_test , y_train, y_test = train_test_split(X,y,test_size= 0.2, random_state= 42)
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+log_model = LogisticRegression()
+log_model.fit(x_train, y_train)
+y_pred_test = log_model.predict(x_test)
+#print("Accuracy:", accuracy_score(y_test, y_pred_test))
+#print("Confusion Matrix:\n",confusion_matrix(y_test, y_pred_test))
+#print("Classification Report:\n",classification_report(y_test, y_pred_test))
+
+from sklearn.ensemble import RandomForestClassifier 
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+rf_model = RandomForestClassifier(random_state=42)
+rf_model.fit(x_train, y_train)
+y_pred_test = rf_model.predict(x_test)
+print("Random Forest Accuracy:", accuracy_score(y_test, y_pred_test))
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred_test))
+print("Classification Report:\n", classification_report(y_test, y_pred_test))
+
+
